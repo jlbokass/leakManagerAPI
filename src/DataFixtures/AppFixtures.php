@@ -140,6 +140,7 @@ class AppFixtures extends Fixture
                 ->setNbrCompressorUseByYear($faker->randomNumber())
                 ->setElectricityPrice($faker->randomFloat(2, 0,1, 20))
                 ->setDescription($faker->paragraph(3, 5))
+                ->setIsActive($faker->boolean())
                 ->setUser($users[array_rand($users)])
                 ;
             $manager->persist($campaign);

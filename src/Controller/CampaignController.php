@@ -3,9 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Campaign;
+use App\Entity\Post;
+use App\Entity\PostLike;
+use App\Entity\User;
 use App\Repository\CampaignRepository;
+use App\Repository\PostLikeRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -174,5 +179,60 @@ class CampaignController extends AbstractController
         $manager->flush();
 
         return new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT);
+    }
+
+    #[Route('/campaigns/state/{id}',
+        name: 'app_campaign_status',
+        methods: ['POST'],
+        requirements: ['id' => ''])]
+    public function activeAndDeactivateCampaign(
+        Campaign $campaign,
+        ManagerRegistry $doctrine,
+        CampaignRepository $campaignRepository): Response
+    {
+        $manager = $doctrine->getManager();
+
+       //** @var User $user */
+
+        /*
+        $user = $this->getUser();
+        if (!$user) {
+            return  $this->json(
+                [
+                    'code' => 403,
+                    'message' => "Unauthorized"
+                ],
+                403
+            );
+        }
+        */
+        // Deactivate a campaign
+        if ($campaign->isIsActive() === true) {
+            $campaign->setIsActive(false);
+
+            $manager->persist($campaign);
+            $manager->flush();
+
+            return $this->json(
+                [
+                    'code' => 200,
+                    'message' => 'Campaign deactivated',
+                ], 200);
+        }
+
+        // Activated a campaign
+        $campaign->setIsActive(true);
+
+        $manager->persist($campaign);
+        $manager->flush();
+
+
+        return $this->json(
+            [
+                'code' => 200,
+                'message' => 'Campaign activated',
+            ],
+            200
+        );
     }
 }

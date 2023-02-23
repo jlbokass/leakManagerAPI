@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Since;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -26,6 +27,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180, unique: true)]
     #[Groups(["getUsers", "getCampaigns"])]
+    #[Since("1.0")]
     #[Assert\Email(
         message: 'The email {{ value }} is not a valid email.',
     )]
@@ -43,6 +45,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Since("1.0")]
     #[Assert\Length(
         min: 2,
         max: 50,
@@ -55,6 +58,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 150)]
+    #[Since("1.0")]
     #[Groups(["getUsers", "getCampaigns"])]
     #[Assert\NotBlank(message: 'firstname cannot be blank or null')]
     #[Assert\Length(
@@ -67,6 +71,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 150)]
     #[Groups(["getUsers", "getCampaigns"])]
+    #[Since("1.0")]
     #[Assert\NotBlank(message: 'lastname cannot be blank or null')]
     #[Assert\Length(
         min: 2,
@@ -78,14 +83,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 30, nullable: true)]
     #[Groups(["getUsers", "getCampaigns"])]
+    #[Since("1.0")]
     private ?string $phoneNumber = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(["getUsers"])]
+    #[Since("1.0")]
     private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(["getUsers"])]
+    #[Since("1.0")]
     private ?DateTimeInterface $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'users')]

@@ -7,7 +7,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Since;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CampaignRepository::class)]
 class Campaign
@@ -20,34 +22,59 @@ class Campaign
 
     #[ORM\Column(length: 255)]
     #[Groups(['getCampaigns'])]
+    #[Since("1.0")]
+    #[Assert\NotBlank(message: 'Society name cannot be blank or null')]
+    #[Assert\Length(
+        min: 2,
+        max: 150,
+        minMessage: 'The name of a society must contain at least {{ limit }} characters',
+        maxMessage: 'The name of a society must contain a maximum of {{ limit }} characters'
+    )]
     private ?string $societyName = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['getCampaigns'])]
+    #[Since("1.0")]
+    #[Assert\NotBlank(message: 'location cannot be blank or null')]
+    #[Assert\Length(
+        min: 2,
+        max: 150,
+        minMessage: 'location must contain at least {{ limit }} characters',
+        maxMessage: 'location must contain a maximum of {{ limit }} characters'
+    )]
     private ?string $location = null;
 
     #[ORM\Column]
     #[Groups(['getCampaigns'])]
+    #[Since("1.0")]
+    #[Assert\Positive(message: 'The KWH price should be positive')]
     private ?float $kwhPrice = null;
 
     #[ORM\Column]
     #[Groups(['getCampaigns'])]
+    #[Since("1.0")]
+    #[Assert\Positive(message: 'The value should be positive')]
     private ?int $nbrCompressorUseByYear = null;
 
     #[ORM\Column]
     #[Groups(['getCampaigns'])]
+    #[Since("1.0")]
+    #[Assert\Positive(message: 'The value should be positive')]
     private ?float $electricityPrice = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['getCampaigns'])]
+    #[Since("1.0")]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(['getCampaigns'])]
+    #[Since("1.0")]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['getCampaigns'])]
+    #[Since("1.0")]
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'campaigns')]
@@ -57,6 +84,11 @@ class Campaign
     #[ORM\OneToMany(mappedBy: 'campaign', targetEntity: Leak::class, cascade: ['remove'])]
     #[Groups(["getCampaigns"])]
     private Collection $leaks;
+
+    #[ORM\Column]
+    #[Groups(["getCampaigns"])]
+    #[Since("1.0")]
+    private ?bool $isActive = null;
 
     public function __construct()
     {
@@ -204,6 +236,18 @@ class Campaign
                 $leak->setCampaign(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isIsActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
 
         return $this;
     }

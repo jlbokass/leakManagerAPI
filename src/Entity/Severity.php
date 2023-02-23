@@ -7,7 +7,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Since;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SeverityRepository::class)]
 class Severity
@@ -20,14 +22,24 @@ class Severity
 
     #[ORM\Column(length: 150)]
     #[Groups(["getSeverities", "getLeaks", "getCampaigns"])]
+    #[Since("1.0")]
+    #[Assert\NotBlank(message: 'Severity name cannot be blank or null')]
+    #[Assert\Length(
+        min: 2,
+        max: 150,
+        minMessage: 'Severity name of an agency must contain at least {{ limit }} characters',
+        maxMessage: 'The name of an agency must contain a maximum of {{ limit }} characters'
+    )]
     private ?string $severityName = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(["getSeverities"])]
+    #[Since("1.0")]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(["getSeverities"])]
+    #[Since("1.0")]
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'severities')]

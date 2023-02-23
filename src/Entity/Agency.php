@@ -7,9 +7,22 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Since;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Hateoas\Configuration\Annotation as Hateoas;
 
+
+/**
+ * @Hateoas\Relation(
+ *      "self",
+ *      href = @Hateoas\Route(
+ *          "appAgencyFindOne",
+ *          parameters = { "id" = "expr(object.getId())" }
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups="getAgencies")
+ * )
+ */
 #[ORM\Entity(repositoryClass: AgencyRepository::class)]
 class Agency
 {
@@ -21,6 +34,7 @@ class Agency
 
     #[ORM\Column(length: 150)]
     #[Groups(["getAgencies", "getUsers"])]
+    #[Since("1.0")]
     #[Assert\NotBlank(message: 'Agency name cannot be blank or null')]
     #[Assert\Length(
         min: 2,
@@ -32,10 +46,12 @@ class Agency
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(["getAgencies"])]
+    #[Since("1.0")]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(["getAgencies"])]
+    #[Since("1.0")]
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'agencies', targetEntity: User::class)]

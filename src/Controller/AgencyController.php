@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Agency;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use OpenApi\Annotations as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +15,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Hateoas\Configuration\Annotation as Hateoas;
 
 #[Route('/api')]
 class AgencyController extends AbstractController
@@ -53,6 +55,7 @@ class AgencyController extends AbstractController
      */
     #[Route(
         '/agencies/{id}',
+        name: 'app_agency_find_one',
         requirements: ['id'=>'\d+'],
         methods: ['GET'])
     ]

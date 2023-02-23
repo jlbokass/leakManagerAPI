@@ -5,7 +5,9 @@ namespace App\Entity;
 use App\Repository\LeakRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Since;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: LeakRepository::class)]
 class Leak
@@ -18,34 +20,51 @@ class Leak
 
     #[ORM\Column(length: 255)]
     #[Groups(["getLeaks"])]
+    #[Since("1.0")]
+    #[Assert\NotBlank(message: 'The leak location cannot be blank or null')]
+    #[Assert\Length(
+        min: 2,
+        max: 150,
+        minMessage: 'The leak location name must contain at least {{ limit }} characters',
+        maxMessage: 'The leak location name must contain a maximum of {{ limit }} characters'
+    )]
     private ?string $leakLocation = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(["getLeaks"])]
+    #[Since("1.0")]
     private ?string $leakDescription = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["getLeaks"])]
+    #[Since("1.0")]
     private ?string $leakImageBig = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["getLeaks"])]
+    #[Since("1.0")]
     private ?string $leakImageSmall = null;
 
     #[ORM\Column]
     #[Groups(["getLeaks", "getCampaigns"])]
+    #[Since("1.0")]
+    #[Assert\Positive(message: 'leak number must be positive')]
     private ?int $leakNumber = null;
 
     #[ORM\Column(nullable: true)]
     #[Groups(["getLeaks", "getCampaigns"])]
+    #[Assert\Positive(message: 'measuredFlow must be positive')]
+    #[Since("1.0")]
     private ?float $measuredFlow = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(["getLeaks", "getCampaigns"])]
+    #[Since("1.0")]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(["getLeaks"])]
+    #[Since("1.0")]
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'leaks')]
