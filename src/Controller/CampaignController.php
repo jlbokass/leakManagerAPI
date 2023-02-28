@@ -3,11 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Campaign;
-use App\Entity\Post;
-use App\Entity\PostLike;
 use App\Entity\User;
 use App\Repository\CampaignRepository;
-use App\Repository\PostLikeRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -183,8 +180,8 @@ class CampaignController extends AbstractController
 
     #[Route('/campaigns/state/{id}',
         name: 'app_campaign_status',
-        methods: ['POST'],
-        requirements: ['id' => ''])]
+        //requirements: ['id' => ''],
+        methods: ['POST'])]
     public function activeAndDeactivateCampaign(
         Campaign $campaign,
         ManagerRegistry $doctrine,
